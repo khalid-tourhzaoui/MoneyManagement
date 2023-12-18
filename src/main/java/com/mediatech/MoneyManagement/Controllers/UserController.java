@@ -6,6 +6,7 @@ import java.security.Principal;
 
 
 
+
 import org.springframework.beans.factory.annotation.Autowired;import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
@@ -32,7 +33,10 @@ public class UserController {
 	public String getRegistrationPage(@ModelAttribute("user") UserDto userDto) {
 		return "Auth/register";
 	}
-	
+	@GetMapping("/")
+	public String getRegi() {
+		return "layout";
+	}
 	
 	@PostMapping("/registration")
 	public String saveUser(@ModelAttribute("user") UserDto userDto, Model model) {
@@ -52,17 +56,15 @@ public class UserController {
 	        model.addAttribute("error", "CIN already exists. Please choose a different cin.");
 	        return "Auth/register"; 
 	    }
-
-        userDto.setRole("USER");
 	    userService.save(userDto);
-	    model.addAttribute("message", "Registered successfully!");
-	    return "Auth/login";
+	    model.addAttribute("SuccessMessage", "Your account has been successfully created. You can now log in using your registered email and password.!");
+	    return "redirect:/login?SuccessRegistration";
 	}
 	
 	@GetMapping("/login")
 	public String login(Model model) {
-		model.addAttribute("successMessage", "You have successfully reset your password!");
-		model.addAttribute("ErrorMessage", "ERRROOOOOOOR!");
+		model.addAttribute("SuccessMessage", "You have successfully reset your password!");
+		model.addAttribute("ErrorMessage", "Incorrect email or password. Please check your credentials and try again.!");
 		return "Auth/login";
 	}
 	

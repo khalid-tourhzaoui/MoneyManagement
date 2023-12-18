@@ -36,6 +36,9 @@ public class CustomUserDetail implements UserDetails {
 	public String getEmail() {
 		return user.getEmail();
 	}
+	public String getGender() {
+		return user.getGender();
+	}
 
 	
 	@Override

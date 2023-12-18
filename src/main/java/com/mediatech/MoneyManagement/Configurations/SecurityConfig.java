@@ -38,8 +38,8 @@ public class SecurityConfig {
 		
 		http.csrf(c -> c.disable())
 		
-		.authorizeHttpRequests(request -> request.requestMatchers("/admin-dashboard","/profile","update-info")
-				.hasAuthority("ADMIN").requestMatchers("/user-dashboard","/profile","update-info").hasAuthority("USER")
+		.authorizeHttpRequests(request -> request.requestMatchers("/admin-dashboard","update-info","/profile","/liste-des-offres")
+				.hasAuthority("ADMIN").requestMatchers("/user-dashboard","/profile","update-info","/profile").hasAuthority("USER")
 				.requestMatchers("/registration","password-request","reset-password","/**").permitAll()
 				.anyRequest().authenticated())
 		

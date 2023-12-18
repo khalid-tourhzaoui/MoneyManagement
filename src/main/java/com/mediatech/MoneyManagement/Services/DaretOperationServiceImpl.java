@@ -1,0 +1,56 @@
+package com.mediatech.MoneyManagement.Services;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.mediatech.MoneyManagement.Models.DaretOperation;
+import com.mediatech.MoneyManagement.Models.User;
+import com.mediatech.MoneyManagement.Repositories.DaretOperationRepository;
+
+@Service
+public class DaretOperationServiceImpl implements DaretOperationService {
+
+    @Autowired
+    private DaretOperationRepository daretOperationRepository;
+
+    @Override
+    public DaretOperation save(DaretOperation daretOperation) {
+        return daretOperationRepository.save(daretOperation);
+    }
+
+    @Override
+    public List<DaretOperation> getAllDaretOperations() {
+        return daretOperationRepository.findAll();
+    }
+
+    @Override
+    public DaretOperation getDaretOperationById(Long id) {
+        return daretOperationRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<DaretOperation> findByAdminOffre(User adminOffre) {
+        return daretOperationRepository.findByAdminOffre(adminOffre);
+    }
+    @Override
+    public long countByStatusAndAdminOffre(String status, User adminOffre) {
+        return daretOperationRepository.countByStatusAndAdminOffre(status, adminOffre);
+    }
+
+    @Override
+    public long countOnProgressByAdminOffre(User adminOffre) {
+        return countByStatusAndAdminOffre("On Progress", adminOffre);
+    }
+
+    @Override
+    public long countPendingByAdminOffre(User adminOffre) {
+        return countByStatusAndAdminOffre("Pending", adminOffre);
+    }
+
+    @Override
+    public long countClosedByAdminOffre(User adminOffre) {
+        return countByStatusAndAdminOffre("Closed", adminOffre);
+    }
+}

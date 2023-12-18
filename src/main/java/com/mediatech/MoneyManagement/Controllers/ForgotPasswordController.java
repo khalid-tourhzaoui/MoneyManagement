@@ -67,8 +67,6 @@ public class ForgotPasswordController {
 			model.addAttribute("error", "Error While Sending email");
 			return "Auth/password-request";
 		}
-		
-		
 		return "redirect:/password-request?success";
 	}
 	

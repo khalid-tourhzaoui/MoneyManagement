@@ -1,0 +1,23 @@
+package com.mediatech.MoneyManagement.Services;
+
+import java.util.List;
+
+import com.mediatech.MoneyManagement.Models.DaretOperation;
+import com.mediatech.MoneyManagement.Models.User;
+
+public interface DaretOperationService {
+	DaretOperation save(DaretOperation daretOperation);
+
+    List<DaretOperation> getAllDaretOperations();
+
+    DaretOperation getDaretOperationById(Long id);
+
+    List<DaretOperation> findByAdminOffre(User adminOffre);
+    long countByStatusAndAdminOffre(String status, User adminOffre);
+
+    long countOnProgressByAdminOffre(User adminOffre);
+
+    long countPendingByAdminOffre(User adminOffre);
+
+    long countClosedByAdminOffre(User adminOffre);
+}
