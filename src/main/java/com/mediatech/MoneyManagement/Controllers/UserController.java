@@ -28,14 +28,13 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
-	
 	@GetMapping("/registration")
 	public String getRegistrationPage(@ModelAttribute("user") UserDto userDto) {
 		return "Auth/register";
 	}
 	@GetMapping("/")
 	public String getRegi() {
-		return "layout";
+		return "base";
 	}
 	
 	@PostMapping("/registration")
@@ -83,6 +82,7 @@ public class UserController {
 	public String adminPage (Model model, Principal principal, HttpServletRequest request) {
 		UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
 		String currentUrl = request.getRequestURL().toString();
+		
 	    model.addAttribute("currentUrl", currentUrl);
 	    model.addAttribute("user", userDetails);
 		return "Admin/AdminDashboard";

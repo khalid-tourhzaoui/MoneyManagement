@@ -1,7 +1,8 @@
 package com.mediatech.MoneyManagement.Models;
 
 import jakarta.persistence.*;
-import java.util.Date;
+
+import java.time.LocalDate;
 
 @Entity
 public class DaretOperation {
@@ -16,10 +17,10 @@ public class DaretOperation {
     private int nombreParticipant;
 
     @Column(nullable = false)
-    private Date dateDebut;
+    private LocalDate dateDebut;
 
     @Column(nullable = false)
-    private Date dateFin;
+    private LocalDate dateFin;
     @Column(nullable = false,length = 30)
     private String typePeriode; // Mensuelle, hebdomadaire, etc.
 
@@ -33,7 +34,7 @@ public class DaretOperation {
     @Column(nullable = false)
     private double montantParPeriode;
 
-	public DaretOperation(String designation, int nombreParticipant, Date dateDebut, Date dateFin,String typePeriode, User adminOffre, String status,
+	public DaretOperation(String designation, int nombreParticipant, LocalDate dateDebut, LocalDate dateFin,String typePeriode, User adminOffre, String status,
 			double montantParPeriode) {
 		
 		this.designation = designation;
@@ -75,19 +76,19 @@ public class DaretOperation {
 		this.nombreParticipant = nombreParticipant;
 	}
 
-	public Date getDateDebut() {
+	public LocalDate getDateDebut() {
 		return dateDebut;
 	}
 
-	public void setDateDebut(Date dateDebut) {
+	public void setDateDebut(LocalDate dateDebut) {
 		this.dateDebut = dateDebut;
 	}
 
-	public Date getDateFin() {
+	public LocalDate getDateFin() {
 		return dateFin;
 	}
 
-	public void setDateFin(Date dateFin) {
+	public void setDateFin(LocalDate dateFin) {
 		this.dateFin = dateFin;
 	}
 

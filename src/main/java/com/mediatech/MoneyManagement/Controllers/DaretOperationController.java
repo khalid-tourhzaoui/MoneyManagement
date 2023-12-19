@@ -1,16 +1,16 @@
 package com.mediatech.MoneyManagement.Controllers;
-import java.util.Arrays;
-import java.util.HashMap;
+
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import com.mediatech.MoneyManagement.Models.DaretOperation;
 import com.mediatech.MoneyManagement.Models.User;
@@ -30,7 +30,11 @@ public class DaretOperationController {
 	private UserService userService;
 	
 	@Autowired
+	UserDetailsService userDetailsService;
+	
+	@Autowired
     private DaretOperationRepository daretOperationRepository;
+	
 
 	@GetMapping("/liste-des-offres")
 	public String listeOffres(Model model, @AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
@@ -62,6 +66,40 @@ public class DaretOperationController {
         // Return the view name
 	    return "Admin/liste-offres";
 	}
+	//-------------------------------------------------------------------------------------------------------------------------------------------
+	    @GetMapping("/ajouter-offre")
+		public String AddOffre(Model model, @AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
+	    	// Get the currently authenticated user details
+		    User currentUser = userService.findByEmail(userDetails.getUsername());
+		    String currentUrl = request.getRequestURL().toString();
+		    model.addAttribute("currentUrl", currentUrl);
+		    // Add the authenticated user details to the model
+		    model.addAttribute("user", currentUser);
+	        DaretOperation daretOperation = new DaretOperation();
+	        model.addAttribute("daretOperation", daretOperation);
+	        // Return the view name for the add offer form
+	        return "Admin/ajouter-offre";
+	    }
+	//------------------------------------------------------------------------------------------------------------------------------------------
+	    @PostMapping("/liste-des-offres")
+	    public String saveOffer(@ModelAttribute("daretOperation") DaretOperation daretOperation, 
+	                            @AuthenticationPrincipal UserDetails userDetails, 
+	                            Model model) {
 
+	        // Get the currently authenticated user details
+	        User currentUser = userService.findByEmail(userDetails.getUsername());
+
+	        // Set the current user as the adminOffre for the offer
+	        daretOperation.setAdminOffre(currentUser);
+
+	        // Set default status as "Pending"
+	        daretOperation.setStatus("Pending");
+	        
+	        // Save the offer
+	        daretOperationService.save(daretOperation);
+
+	        // Redirect to the list of offers
+	        return "redirect:/liste-des-offres";
+	    }
     
 }

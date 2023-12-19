@@ -154,7 +154,7 @@
 				</div>
 				<ul class="metismenu" id="menu">
 					<li class="nav-label first">Main Menu</li>
-                    <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+                    <li ><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
 							<i class="flaticon-144-layout"></i>
 							<span class="nav-text">Dashboard</span>
 						</a>
@@ -167,10 +167,11 @@
                     <!--***************************************************************************************************-->
                     <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
 							<i class="flaticon-381-network"></i>
-							<span class="nav-text">Daret Management</span>
+							<span class="nav-text">Offer Management</span>
 						</a>
-                        <ul aria-expanded="false">
-							<li><a th:href="@{/liste-des-offres}"><i class="fa-solid fa-list"></i> Daret list</a></li>
+                         <ul aria-expanded="false">
+							<li><a th:href="@{/liste-des-offres}"><i class="fa-solid fa-list"></i> List of Offers</a></li>
+							<li><a th:href="@{/ajouter-offre}"><i class="fa-solid fa-folder-plus"></i> Add an Offer</a></li>
 						</ul>
 
                     </li>
@@ -248,7 +249,7 @@
 								<div class="col-xl-3 my-2 col-lg-4 col-sm-6">
 									<p class="text-primary mb-1">#N-[[${operation.id}]]</p>
 									<h5 class="title font-w600 mb-2"><a href="post-details.html" class="text-black">[[${operation.designation}]]</a></h5>
-									<div class="text-dark"><i class="fa fa-calendar-o mr-3" aria-hidden="true"></i>Created On [[${#dates.format(operation.dateDebut, 'dd-MM-yyyy')}]]</div>
+									<div class="text-dark"><i class="fa fa-calendar-o mr-3" aria-hidden="true"></i>Created On [[${operation.dateDebut}]]</div>
 								</div>
 								<div class="col-xl-2 my-2 col-lg-4 col-sm-6">
 									<div class="d-flex align-items-center">
@@ -280,7 +281,7 @@
 										</div>
 										<div class="ml-2">
 											<span>Deadline</span>
-											<h5 class="mb-0 font-w50 text-black"><i class="fa fa-calendar-o mr-3" aria-hidden="true"></i>Finished On [[${#dates.format(operation.dateFin, 'dd-MM-yyyy')}]]</h5>
+											<h5 class="mb-0 font-w50 text-black"><i class="fa fa-calendar-o mr-3" aria-hidden="true"></i>Finished On [[${operation.dateFin}]]</h5>
 										
 										</div>
 									</div>
