@@ -24,7 +24,7 @@ public class DaretOperation {
     @Column(nullable = false,length = 30)
     private String typePeriode; // Mensuelle, hebdomadaire, etc.
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "id")
     private User adminOffre;
 

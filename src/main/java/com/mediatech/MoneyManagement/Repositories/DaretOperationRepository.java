@@ -11,6 +11,7 @@ public interface DaretOperationRepository extends JpaRepository<DaretOperation, 
 	List<DaretOperation> findByAdminOffre(User adminOffre);
     long countByStatusAndAdminOffre(String status, User adminOffre);
     long countByAdminOffre(User adminOffre);
+    List<DaretOperation> findByAdminOffreAndStatus(User adminOffre, String status);
 
 
 }

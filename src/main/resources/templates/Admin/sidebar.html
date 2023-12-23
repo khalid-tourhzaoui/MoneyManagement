@@ -1,0 +1,43 @@
+<!--**********************************
+            Sidebar start
+        ***********************************-->
+        <div class="deznav" th:fragment="sidebar">
+            <div class="deznav-scroll">
+				<div class="main-profile">
+					<div class="image-bx">
+						<img src="images/men_avatar.png" alt="avatar men" th:if="${user.getGender() == 'MEN'}">
+						<img src="images/women_avatar.png" alt="avatar men" th:if="${user.getGender() == 'WOMEN'}">
+						<a th:href="@{${currentUrl}}"><i class="fa fa-cog" aria-hidden="true"></i></a>
+					</div>
+					<h5 th:if="${user.getGender() == 'MEN'}" class="name"><span class="font-w400" >Hello,Sur</span></h5>
+					<h5 th:if="${user.getGender() == 'WOMEN'}" class="name"><span class="font-w400" >Hello,Madame</span></h5>
+					<p class="email"><span  class="__cf_email__">[[${user.getEmail()}]]</a></p>
+				</div>
+				<ul class="metismenu" id="menu">
+					<li class="nav-label first">Main Menu</li>
+                    <li ><a  th:href="@{/admin-dashboard}" aria-expanded="false">
+							<i class="flaticon-144-layout"></i>
+							<span class="nav-text">Dashboard</span>
+						</a>
+                    </li>
+                    <!--***************************************************************************************************-->
+                    <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+							<i class="flaticon-381-network"></i>
+							<span class="nav-text">Offer Management</span>
+						</a>
+                         <ul aria-expanded="false">
+							<li><a th:href="@{/liste-des-offres}"><i class="fa-solid fa-list"></i> List of Offers</a></li>
+							<li><a th:href="@{/ajouter-offre}"><i class="fa-solid fa-folder-plus"></i> Add an Offer</a></li>
+						</ul>
+
+                    </li>
+                </ul>
+				<!--<div class="copyright">
+					<p><strong>Zenix Crypto Admin Dashboard</strong> © 2021 All Rights Reserved</p>
+					<p class="fs-12">Made with <span class="heart"></span> by DexignZone</p>
+				</div>-->
+			</div>
+        </div>
+        <!--**********************************
+            Sidebar end
+        ***********************************-->

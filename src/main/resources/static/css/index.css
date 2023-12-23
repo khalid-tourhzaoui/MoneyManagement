@@ -1,14 +1,9 @@
-/* Importing Raleway font from Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;600&display=swap');
-
-/* Global styling */
 body {
     font-family: 'Raleway', sans-serif;
     background-color: #F7F7F7;
-    margin: 0; /* Remove default body margin */
 }
 
-/* Login container styling */
 .login-1 {
     height: 100vh;
     display: flex;
@@ -17,94 +12,93 @@ body {
     overflow: hidden;
 }
 
-/* Login form container styling */
-.login-form {
-    margin: 120px 80px;
+/*.login-form {
+    margin: 50rem 0.5rem;
     overflow: hidden;
-}
+}*/
 
-/* Image box styling */
 .img-box {
-    max-height: 700px;
+    max-height: 30rem;
     display: flex;
     align-items: center;
 }
 
-/* Login box styling */
-.login-form .login-box {
+/*.login-form .login-box {
     font-size: 1rem;
-    padding: 15px 15px 15px 30px;
-}
+    padding: 1rem 1rem 1rem 1.5rem;
+}*/
 
-/* Login title styling */
 .login-form .login-box .login-title {
-    font-size: 40px;
+    font-size: 2rem;
     font-weight: 600;
     color: #151865;
 }
 
-/* Login paragraph styling */
 .login-form .login-box .login-p {
     font-weight: 300;
     color: #151865;
     font-size: 20px;
 }
 
-/* Responsive styling for smaller screens */
-@media screen and (max-width: 767px) {
-    .login-1 {
-        padding: 0;
-        overflow: visible;
-        height: 100%;
-    }
+/*.login-form .back-img {
+    max-width: 100%;
+    height: auto;
+}*/
 
-    .login-form {
-        margin: 10px;
-        overflow: visible;
-        color: red;
-    }
+.login-form .check-field {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
-/* Responsive styling for medium screens */
+.login-form a {
+    color: #151865;
+    text-decoration: none;
+}
 
+.login-form .form-group, .login-form .input-group {
+    padding: 1rem 1.5rem 0.3rem 0rem;
+}
 
-
-/* Form group label styling */
 .login-form .form-group label {
-    margin-bottom: 0.5rem;
+    margin-bottom: .5rem;
     font-size: 1rem;
 }
 
-/* Form control styling */
 .login-form .form-group .form-control {
-    padding: 0.81rem 1rem;
+    padding: .810rem 1rem;
     border-color: #45B4D0;
-    border-radius: 0;
     font-weight: 300;
     color: #151865;
     font-size: 20px;
-    margin-bottom: 10px;
+    margin-bottom: 3px;
 }
-
-/* Button styling */
 .login-form .btn-primary {
     background-color: #45B4D0;
     border-color: #45B4D0;
     padding: 0.8rem 2.6rem;
     font-weight: 500;
+    -webkit-transition: all 0.5s ease;
     transition: all 0.5s ease;
     box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);
     margin: 10px 0px 20px;
     border-radius: 5px;
 }
 
-/* Button hover styling */
 .login-form .btn-primary:hover {
     background-color: #006adb;
     border-color: #006adb;
 }
 
-/* Link styling */
-.login-form .btn-link {
-    color: #1428bf;
+
+@media screen and (max-width: 767px) {
+    .alert-danger{
+		margin-top: 3.5rem;
+		font-size: 1rem;
+		width: 100%;
+	}
+	.login-1 {
+    height: 110vh;
+    }
 }
+

@@ -2,6 +2,7 @@ package com.mediatech.MoneyManagement.Controllers;
 
 import java.util.List;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.mediatech.MoneyManagement.Models.DaretOperation;
 import com.mediatech.MoneyManagement.Models.User;
@@ -37,35 +39,38 @@ public class DaretOperationController {
 	
 
 	@GetMapping("/liste-des-offres")
-	public String listeOffres(Model model, @AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
-	    // Get the currently authenticated user details
+	public String listeOffres(
+	    @RequestParam(name = "status", defaultValue = "All") String status,
+	    Model model,
+	    @AuthenticationPrincipal UserDetails userDetails,
+	    HttpServletRequest request
+	) {
 	    User currentUser = userService.findByEmail(userDetails.getUsername());
+	    List<DaretOperation> userDaretOperations;
 
-	    // Retrieve all DaretOperations created by the user
-	    List<DaretOperation> userDaretOperations = daretOperationService.findByAdminOffre(currentUser);
-	    String currentUrl = request.getRequestURL().toString();
-	    model.addAttribute("currentUrl", currentUrl);
-	    // Add the authenticated user details to the model
+	    if (status.equals("All")) {
+	        userDaretOperations = daretOperationService.findByAdminOffre(currentUser);
+	    } else {
+	        userDaretOperations = daretOperationService.findByAdminOffreAndStatus(currentUser, status);
+	    }
+
+	    long inProgressCount = daretOperationRepository.countByStatusAndAdminOffre("In Progress", currentUser);
+	    long pendingCount = daretOperationRepository.countByStatusAndAdminOffre("Pending", currentUser);
+	    long closedCount = daretOperationRepository.countByStatusAndAdminOffre("Closed", currentUser);
+	    long totalOffersCount = daretOperationRepository.countByAdminOffre(currentUser);
+
+	    model.addAttribute("currentUrl", request.getRequestURL().toString());
 	    model.addAttribute("user", currentUser);
-
-	    // Add the list of DaretOperations to the model
 	    model.addAttribute("userDaretOperations", userDaretOperations);
-	 // Get counts for each status
-        long inProgressCount = daretOperationRepository.countByStatusAndAdminOffre("In Progress", currentUser);
-        long pendingCount = daretOperationRepository.countByStatusAndAdminOffre("Pending", currentUser);
-        long closedCount = daretOperationRepository.countByStatusAndAdminOffre("Closed", currentUser);
-        long totalOffersCount = daretOperationRepository.countByAdminOffre(currentUser);
+	    model.addAttribute("inProgressCount", inProgressCount);
+	    model.addAttribute("pendingCount", pendingCount);
+	    model.addAttribute("closedCount", closedCount);
+	    model.addAttribute("totalOffersCount", totalOffersCount);
+	    model.addAttribute("selectedStatus", status);
 
-
-        // Add counts to the model
-        model.addAttribute("inProgressCount", inProgressCount);
-        model.addAttribute("pendingCount", pendingCount);
-        model.addAttribute("closedCount", closedCount);
-        model.addAttribute("totalOffersCount", totalOffersCount);
-     
-        // Return the view name
 	    return "Admin/liste-offres";
 	}
+
 	//-------------------------------------------------------------------------------------------------------------------------------------------
 	    @GetMapping("/ajouter-offre")
 		public String AddOffre(Model model, @AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
@@ -101,5 +106,25 @@ public class DaretOperationController {
 	        // Redirect to the list of offers
 	        return "redirect:/liste-des-offres";
 	    }
+	//--------------------------------------------------------------------------------------------------------------------------------------------
+	    @PostMapping("/delete-daret")
+	    public String deleteDaret(@RequestParam Long operationId) {
+	        // Retrieve the DaretOperation by ID
+	        DaretOperation daretOperation = daretOperationService.findById(operationId);
+
+	        // Check if the DaretOperation is in progress
+	        if ("In Progress".equals(daretOperation.getStatus())) {
+	            // Display a SweetAlert for cancellation
+	            return "redirect:/liste-des-offres?deleteCanceled";
+	        }
+
+	        // Implement your service method to delete the DaretOperation by ID
+	        daretOperationService.deleteDaretById(operationId);
+
+	        // Redirect to the list view after deletion
+	        return "redirect:/liste-des-offres?deleteSuccess";
+	    }
+
+
     
 }

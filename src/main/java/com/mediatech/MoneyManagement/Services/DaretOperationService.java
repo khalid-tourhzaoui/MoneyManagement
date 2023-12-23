@@ -20,4 +20,10 @@ public interface DaretOperationService {
     long countPendingByAdminOffre(User adminOffre);
 
     long countClosedByAdminOffre(User adminOffre);
+    List<DaretOperation> findByAdminOffreAndStatus(User adminOffre, String status);
+    DaretOperation findById(Long id);
+
+    void deleteDaretById(Long id);
+
+
 }

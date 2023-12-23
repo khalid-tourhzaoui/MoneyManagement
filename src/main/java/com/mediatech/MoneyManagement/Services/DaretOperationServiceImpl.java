@@ -53,4 +53,17 @@ public class DaretOperationServiceImpl implements DaretOperationService {
     public long countClosedByAdminOffre(User adminOffre) {
         return countByStatusAndAdminOffre("Closed", adminOffre);
     }
+    @Override
+    public List<DaretOperation> findByAdminOffreAndStatus(User adminOffre, String status) {
+        return daretOperationRepository.findByAdminOffreAndStatus(adminOffre, status);
+    }
+    @Override
+    public DaretOperation findById(Long id) {
+        return daretOperationRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public void deleteDaretById(Long id) {
+        daretOperationRepository.deleteById(id);
+    }
 }
