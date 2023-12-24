@@ -3,11 +3,12 @@ package com.mediatech.MoneyManagement.Models;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 public class DaretOperation {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(nullable = false, length = 50)
@@ -33,9 +34,20 @@ public class DaretOperation {
 
     @Column(nullable = false)
     private double montantParPeriode;
+    
+    @Column(nullable = false)
+    private Long tourDeRole;
+    
+    @ManyToMany
+    @JoinTable(
+        name = "daret_participants",
+        joinColumns = @JoinColumn(name = "daret_id"),
+        inverseJoinColumns = @JoinColumn(name = "utilisateur_id")
+    )
+    private List<User> participants;
 
 	public DaretOperation(String designation, int nombreParticipant, LocalDate dateDebut, LocalDate dateFin,String typePeriode, User adminOffre, String status,
-			double montantParPeriode) {
+			double montantParPeriode,Long tourDeRole) {
 		
 		this.designation = designation;
 		this.nombreParticipant = nombreParticipant;
@@ -45,6 +57,7 @@ public class DaretOperation {
 		this.adminOffre = adminOffre;
 		this.status = status;
 		this.montantParPeriode = montantParPeriode;
+		this.tourDeRole = tourDeRole;
 	}
 
 	public DaretOperation() {
@@ -122,6 +135,22 @@ public class DaretOperation {
 
 	public void setMontantParPeriode(double montantParPeriode) {
 		this.montantParPeriode = montantParPeriode;
+	}
+
+	public Long getTourDeRole() {
+		return tourDeRole;
+	}
+
+	public void setTourDeRole(Long tourDeRole) {
+		this.tourDeRole = tourDeRole;
+	}
+
+	public List<User> getParticipants() {
+		return participants;
+	}
+
+	public void setParticipants(List<User> participants) {
+		this.participants = participants;
 	}
 	
     

@@ -83,8 +83,9 @@ public class UserController {
 		UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
 		String currentUrl = request.getRequestURL().toString();
 		
-	    model.addAttribute("currentUrl", currentUrl);
-	    model.addAttribute("user", userDetails);
+		model.addAttribute("currentUrl", currentUrl)
+        .addAttribute("user", userDetails)
+        .addAttribute("pageTitle", "DARET-ADMIN DASHBOARD ");
 		return "Admin/AdminDashboard";
 	}
 	

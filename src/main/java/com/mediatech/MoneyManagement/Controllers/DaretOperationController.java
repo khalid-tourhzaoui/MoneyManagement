@@ -59,14 +59,15 @@ public class DaretOperationController {
 	    long closedCount = daretOperationRepository.countByStatusAndAdminOffre("Closed", currentUser);
 	    long totalOffersCount = daretOperationRepository.countByAdminOffre(currentUser);
 
-	    model.addAttribute("currentUrl", request.getRequestURL().toString());
-	    model.addAttribute("user", currentUser);
-	    model.addAttribute("userDaretOperations", userDaretOperations);
-	    model.addAttribute("inProgressCount", inProgressCount);
-	    model.addAttribute("pendingCount", pendingCount);
-	    model.addAttribute("closedCount", closedCount);
-	    model.addAttribute("totalOffersCount", totalOffersCount);
-	    model.addAttribute("selectedStatus", status);
+	    model.addAttribute("currentUrl", request.getRequestURL().toString())
+	    	.addAttribute("user", currentUser)
+		    .addAttribute("userDaretOperations", userDaretOperations)
+		    .addAttribute("inProgressCount", inProgressCount)
+		    .addAttribute("pendingCount", pendingCount)
+		    .addAttribute("closedCount", closedCount)
+		    .addAttribute("totalOffersCount", totalOffersCount)
+		    .addAttribute("selectedStatus", status)
+        	.addAttribute("pageTitle", "DARET-ADMIN OFFER LIST");
 
 	    return "Admin/liste-offres";
 	}
@@ -81,12 +82,14 @@ public class DaretOperationController {
 		    // Add the authenticated user details to the model
 		    model.addAttribute("user", currentUser);
 	        DaretOperation daretOperation = new DaretOperation();
-	        model.addAttribute("daretOperation", daretOperation);
+	        model.addAttribute("daretOperation", daretOperation)
+        		.addAttribute("pageTitle", "DARET-ADMIN ADD OFFER");
+
 	        // Return the view name for the add offer form
 	        return "Admin/ajouter-offre";
 	    }
 	//------------------------------------------------------------------------------------------------------------------------------------------
-	    @PostMapping("/liste-des-offres")
+	    @PostMapping("/ajouter-offre")
 	    public String saveOffer(@ModelAttribute("daretOperation") DaretOperation daretOperation, 
 	                            @AuthenticationPrincipal UserDetails userDetails, 
 	                            Model model) {
@@ -99,7 +102,9 @@ public class DaretOperationController {
 
 	        // Set default status as "Pending"
 	        daretOperation.setStatus("Pending");
-	        
+	        // Initialiser le tour de rôle comme 1
+	        daretOperation.setTourDeRole(1L);
+	       	        
 	        // Save the offer
 	        daretOperationService.save(daretOperation);
 
