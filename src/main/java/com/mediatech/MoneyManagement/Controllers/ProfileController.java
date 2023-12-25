@@ -40,27 +40,17 @@ public class ProfileController {
         // Check if the email is being changed and if the new email already exists
         if (!originalUser.getEmail().equals(updatedUser.getEmail()) &&
                 userService.existsByEmail(updatedUser.getEmail())) {
-            model.addAttribute("error", "Email already exists. Please choose a different email.");
-            return "redirect:/profile";
+            model.addAttribute("ErrorMessage", "Email already exists. Please choose a different email.");
+            return "redirect:/profile?error";
         } else if (!originalUser.getCin().equals(updatedUser.getCin()) &&
                 userService.existsByCin(updatedUser.getCin())) {
-            model.addAttribute("error", "CIN already exists. Please choose a different CIN.");
-            return "redirect:/profile";
+            model.addAttribute("ErrorMessage", "CIN already exists. Please choose a different CIN.");
+            return "redirect:/profile?error";
         }
         
-        // For testing purposes, set a gender value
-        updatedUser.setGender("khalid");
-
-        try {
             userService.updateUserInfo(updatedUser);
-            model.addAttribute("success", "User information updated successfully!");
-            model.addAttribute("defaultTab", "profile-settings");
-        } catch (Exception e) {
-            e.printStackTrace();
-            model.addAttribute("error", "An error occurred during the update. Please try again.");
-        }
-
-        return "redirect:/profile";
+            model.addAttribute("SuccessMessage", "User information updated successfully!");
+            return "redirect:/profile?success";
     }
 
 

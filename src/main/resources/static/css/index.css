@@ -83,6 +83,7 @@ body {
     box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);
     margin: 10px 0px 20px;
     border-radius: 5px;
+    width: 37rem;
 }
 
 .login-form .btn-primary:hover {
@@ -100,5 +101,8 @@ body {
 	.login-1 {
     height: 110vh;
     }
+    .login-form .btn-primary{
+		width: 19rem;
+	}
 }
 

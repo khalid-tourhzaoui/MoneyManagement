@@ -3,7 +3,7 @@
     <div class="project-info">
         <div class="col-xl-3 my-2 col-lg-4 col-sm-6">
             <p class="text-primary mb-1">#N-[[${operation.id}]]</p>
-            <h5 class="title font-w600 mb-2"><a href="post-details.html" class="text-black">[[${operation.designation}]]</a></h5>
+            <h5 class="title font-w600 mb-2"><a href="" class="text-black">[[${operation.designation}]]</a></h5>
             <div class="text-dark"><i class="fa fa-calendar-o mr-3" aria-hidden="true"></i>Created On [[${operation.dateDebut}]]</div>
         </div>
 
@@ -47,8 +47,8 @@
             <div class="d-flex project-status align-items-center">
                 <!-- Display status based on the operation's status -->
                 <span th:if="${operation.status == 'In Progress'}" class="btn bgl-info text-info status-btn ms-5">[[${operation.status}]]</span>
-                <span th:if="${operation.status == 'Pending'}" class="btn bgl-warning text-warning status-btn mr-5">[[${operation.status}]]</span>
-                <span th:if="${operation.status == 'closed'}" class="btn bgl-danger text-danger status-btn mr-5">[[${operation.status}]]</span>
+                <span th:if="${operation.status == 'Pending'}" class="btn bgl-warning text-warning status-btn ms-5">[[${operation.status}]]</span>
+                <span th:if="${operation.status == 'closed'}" class="btn bgl-danger text-danger status-btn ms-5">[[${operation.status}]]</span>
 
                 <!-- Dropdown for additional actions -->
                 <div class="dropdown">

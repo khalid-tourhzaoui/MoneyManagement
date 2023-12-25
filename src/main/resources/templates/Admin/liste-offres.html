@@ -61,25 +61,25 @@
 					<div class="card-action card-tabs  mr-auto">
 					    <ul class="nav nav-tabs style-2">
 					        <li class="nav-item">
-					            <a href="#navpills-1" class="nav-link" th:href="@{/liste-des-offres?status=All}" 
+					            <a href="#navpills-1" class="nav-link text-dark" th:href="@{/liste-des-offres?status=All}" 
 					               th:classappend="${selectedStatus == 'All' ? 'active' : ''}" aria-expanded="false">
 					                All Offre <span class="badge badge-pill shadow-primary badge-primary">[[${totalOffersCount}]]</span>
 					            </a>
 					        </li>
 					        <li class="nav-item">
-					            <a href="#navpills-2" class="nav-link" th:href="@{/liste-des-offres?status=In Progress}" 
+					            <a href="#navpills-2" class="nav-link text-dark" th:href="@{/liste-des-offres?status=In Progress}" 
 					               th:classappend="${selectedStatus == 'In Progress' ? 'active' : ''}" aria-expanded="false">
 					                On Progress <span class="badge badge-pill badge-info shadow-info">[[${inProgressCount}]]</span>
 					            </a>
 					        </li>
 					        <li class="nav-item">
-					            <a href="#navpills-3" class="nav-link" th:href="@{/liste-des-offres?status=Pending}" 
+					            <a href="#navpills-3" class="nav-link text-dark" th:href="@{/liste-des-offres?status=Pending}" 
 					               th:classappend="${selectedStatus == 'Pending' ? 'active' : ''}" aria-expanded="true">
 					                Pending <span class="badge badge-pill badge-warning shadow-warning">[[${pendingCount}]]</span>
 					            </a>
 					        </li>
 					        <li class="nav-item">
-					            <a href="#navpills-4" class="nav-link" th:href="@{/liste-des-offres?status=Closed}" 
+					            <a href="#navpills-4" class="nav-link text-dark" th:href="@{/liste-des-offres?status=Closed}" 
 					               th:classappend="${selectedStatus == 'Closed' ? 'active' : ''}" aria-expanded="true">
 					                Closed <span class="badge badge-pill badge-danger shadow-danger">[[${closedCount}]]</span>
 					            </a>
@@ -146,7 +146,6 @@
     <script src="js/custom.min.js"></script>
 	<script src="js/deznav-init.js"></script>
     <script src="js/demo.js"></script>
-    <script src="js/styleSwitcher.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script>
 		var currentDate = new Date();
