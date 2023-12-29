@@ -65,7 +65,7 @@ public class ProfileController {
 
         // Check if the principal is null
         if (principal == null || principal.getName() == null) {
-            model.addAttribute("error", "User not authenticated. Password update failed.");
+            model.addAttribute("ErrorMessage", "User not authenticated. Password update failed.");
             return "redirect:/profile?error";
         }
 
@@ -73,25 +73,25 @@ public class ProfileController {
 
         // Check if the current password is correct
         if (!userService.isCorrectPassword(userEmail, currentPassword)) {
-            model.addAttribute("error", "Incorrect current password.");
+            model.addAttribute("ErrorMessage", "Incorrect current password.");
             return "redirect:/profile?error";
         }
 
         // Check if the new password and confirm password match
         if (!newPassword.equals(confirmPassword)) {
-            model.addAttribute("error", "New password and confirm password do not match.");
+            model.addAttribute("ErrorMessage", "New password and confirm password do not match.");
             return "redirect:/profile?error";
         }
 
         // Check if the new password is different from the old password
         if (userService.isCorrectPassword(userEmail, newPassword)) {
-            model.addAttribute("error", "New password must be different from the current password.");
+            model.addAttribute("ErrorMessage", "New password must be different from the current password.");
             return "redirect:/profile?error";
         }
 
         // Update user password
         userService.updateUserPassword(userEmail, currentPassword, newPassword);
-        model.addAttribute("success", "Password updated successfully!");
+        model.addAttribute("SuccessMessage", "Password updated successfully!");
         return "redirect:/profile?success";
     }
 
@@ -105,7 +105,7 @@ public class ProfileController {
 
         // Check if the user exists
         if (existingUser == null) {
-            model.addAttribute("error", "User not found. Account deletion failed.");
+            model.addAttribute("ErrorMessage", "User not found. Account deletion failed.");
             System.out.println("error 1");
             return "redirect:/profile?error";
 
@@ -113,14 +113,14 @@ public class ProfileController {
 
         // Check if the entered password is correct
         if (!userService.isCorrectPassword(existingUser.getEmail(), password)) {
-            model.addAttribute("error", "Incorrect password. Account deletion failed.");
+            model.addAttribute("ErrorMessage", "Incorrect password. Account deletion failed.");
             System.out.println("error 2");
             return "redirect:/profile?error";
         }
 
         // Perform account deletion
         userService.deleteUser(existingUser.getEmail(), password);
-        model.addAttribute("success", "Account deleted successfully!");
+        model.addAttribute("SuccessMessage", "Account deleted successfully!");
         return "redirect:/logout";
     }
 

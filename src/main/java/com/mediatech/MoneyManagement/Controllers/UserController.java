@@ -3,11 +3,9 @@ package com.mediatech.MoneyManagement.Controllers;
 
 import java.security.Principal;
 
-
-
-
-
-import org.springframework.beans.factory.annotation.Autowired;import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.ui.Model;
 
 import com.mediatech.MoneyManagement.DTO.UserDto;
+import com.mediatech.MoneyManagement.Models.User;
+import com.mediatech.MoneyManagement.Repositories.DaretOperationRepository;
 import com.mediatech.MoneyManagement.Services.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,7 +27,9 @@ public class UserController {
 	
 	@Autowired
 	private UserService userService;
-	
+	@Autowired
+    private DaretOperationRepository daretOperationRepository;
+
 	@GetMapping("/registration")
 	public String getRegistrationPage(@ModelAttribute("user") UserDto userDto) {
 		return "Auth/register";
@@ -79,13 +81,21 @@ public class UserController {
 	}
 	
 	@GetMapping("/admin-dashboard")
-	public String adminPage (Model model, Principal principal, HttpServletRequest request) {
-		UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
+	public String adminPage (Model model,@AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
+	    User currentUser = userService.findByEmail(userDetails.getUsername());
 		String currentUrl = request.getRequestURL().toString();
-		
+		long inProgressCount = daretOperationRepository.countByStatusAndAdminOffre("Progress", currentUser);
+	    long pendingCount = daretOperationRepository.countByStatusAndAdminOffre("Pending", currentUser);
+	    long closedCount = daretOperationRepository.countByStatusAndAdminOffre("Closed", currentUser);
+	    long totalOffersCount = daretOperationRepository.countByAdminOffre(currentUser);
+
 		model.addAttribute("currentUrl", currentUrl)
-        .addAttribute("user", userDetails)
-        .addAttribute("pageTitle", "DARET-ADMIN DASHBOARD ");
+	        .addAttribute("user", currentUser)
+	        .addAttribute("pageTitle", "DARET-ADMIN DASHBOARD ")
+			.addAttribute("inProgressCount", inProgressCount)
+		    .addAttribute("pendingCount", pendingCount)
+		    .addAttribute("closedCount", closedCount)
+		    .addAttribute("totalOffersCount", totalOffersCount);
 		return "Admin/AdminDashboard";
 	}
 	

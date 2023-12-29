@@ -3,14 +3,17 @@ package com.mediatech.MoneyManagement.Controllers;
 import java.util.List;
 
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -21,6 +24,7 @@ import com.mediatech.MoneyManagement.Services.DaretOperationService;
 import com.mediatech.MoneyManagement.Services.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 
 @Controller
@@ -54,7 +58,7 @@ public class DaretOperationController {
 	        userDaretOperations = daretOperationService.findByAdminOffreAndStatus(currentUser, status);
 	    }
 
-	    long inProgressCount = daretOperationRepository.countByStatusAndAdminOffre("In Progress", currentUser);
+	    long inProgressCount = daretOperationRepository.countByStatusAndAdminOffre("Progress", currentUser);
 	    long pendingCount = daretOperationRepository.countByStatusAndAdminOffre("Pending", currentUser);
 	    long closedCount = daretOperationRepository.countByStatusAndAdminOffre("Closed", currentUser);
 	    long totalOffersCount = daretOperationRepository.countByAdminOffre(currentUser);
@@ -90,27 +94,66 @@ public class DaretOperationController {
 	    }
 	//------------------------------------------------------------------------------------------------------------------------------------------
 	    @PostMapping("/ajouter-offre")
-	    public String saveOffer(@ModelAttribute("daretOperation") DaretOperation daretOperation, 
-	                            @AuthenticationPrincipal UserDetails userDetails, 
+	    public String saveOffer(@ModelAttribute("daretOperation") @Valid DaretOperation daretOperation,
+	                            BindingResult bindingResult,
+	                            @AuthenticationPrincipal UserDetails userDetails,
 	                            Model model) {
 
-	        // Get the currently authenticated user details
+	        if (bindingResult.hasErrors()) {
+	            // If there are validation errors, return to the form page with error messages
+	            return "Admin/ajouter-offre";
+	        }
+
 	        User currentUser = userService.findByEmail(userDetails.getUsername());
-
-	        // Set the current user as the adminOffre for the offer
 	        daretOperation.setAdminOffre(currentUser);
-
-	        // Set default status as "Pending"
 	        daretOperation.setStatus("Pending");
-	        // Initialiser le tour de rôle comme 1
 	        daretOperation.setTourDeRole(1L);
-	       	        
-	        // Save the offer
+
 	        daretOperationService.save(daretOperation);
 
-	        // Redirect to the list of offers
 	        return "redirect:/liste-des-offres";
 	    }
+	//-------------------------------------------------------------------------------------------------------------------------------------------
+	    @GetMapping("/edit-offer/{operationId}")
+	    public String showUpdateForm(@PathVariable Long operationId, Model model,
+	                                 @AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
+	        // Rest of the code remains the same
+	    	 User currentUser = userService.findByEmail(userDetails.getUsername());
+			    String currentUrl = request.getRequestURL().toString();
+			    model.addAttribute("currentUrl", currentUrl);
+			    // Add the authenticated user details to the model
+			    model.addAttribute("user", currentUser);
+	        // Retrieve the DaretOperation by ID
+	        DaretOperation daretOperation = daretOperationService.findById(operationId);
+
+	        // Check if the DaretOperation is editable
+	        /*if ("Progress".equals(daretOperation.getStatus())) {
+	            // If the DaretOperation is in progress, redirect with a message
+	            return "redirect:/liste-des-offres?updateNotAllowed";
+	        }*/
+
+	        // If the DaretOperation is not in progress, show the update form
+	        model.addAttribute("daretOperation", daretOperation)
+	             .addAttribute("pageTitle", "DARET-ADMIN UPDATE OFFER");
+
+	        // Return the view name for the update offer form
+	        return "Admin/test";
+	    }
+
+	    //-------------------------------------------------------------------------------------------------------------------------------------------
+	    @PostMapping("/edit-offer/{operationId}")
+	    public String updateOffer(@PathVariable Long operationId,@ModelAttribute("daretOperation") DaretOperation updatedDaretOperation,
+	                              @AuthenticationPrincipal UserDetails userDetails) {
+	        // Rest of the code remains the same
+
+	        // Save the updated offer
+	        daretOperationService.save(updatedDaretOperation);
+
+	        // Redirect to the list of offers after updating
+	        return "redirect:/liste-des-offres?updateSuccess";
+	    }
+
+
 	//--------------------------------------------------------------------------------------------------------------------------------------------
 	    @PostMapping("/delete-daret")
 	    public String deleteDaret(@RequestParam Long operationId) {

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="Admin/head :: head" >
+<head th:replace="~{Admin/head :: head}">
 
 <body>
 
@@ -27,7 +27,7 @@
         <!--**********************************
             Nav header start
         ***********************************-->
-               <div th:replace="Admin/NavHeader :: NavHeader"></div>
+               <div th:replace="~{Admin/NavHeader :: NavHeader}"></div>
 
         <!--**********************************
             Nav header end
@@ -37,7 +37,7 @@
 		<!--**********************************
             Header start
         ***********************************-->
-		        <div th:replace="Admin/header :: header"></div>
+		        <div th:replace="~{Admin/header :: header}"></div>
         <!--**********************************
             Header end ti-comment-alt
         ***********************************-->
@@ -45,7 +45,7 @@
         <!--**********************************
             Sidebar start
         ***********************************-->
-                <div th:replace="Admin/sidebar :: sidebar"></div>
+                <div th:replace="~{Admin/sidebar :: sidebar}"></div>
 
         <!--**********************************
             Sidebar end
@@ -58,62 +58,58 @@
             <div class="container-fluid">
                 <div class="project-nav">
                     <!-- Navigation tabs -->
-					<div class="card-action card-tabs  mr-auto">
+					<div class="card card-action card-tabs  mx-auto">
 					    <ul class="nav nav-tabs style-2">
 					        <li class="nav-item">
-					            <a href="#navpills-1" class="nav-link text-dark" th:href="@{/liste-des-offres?status=All}" 
-					               th:classappend="${selectedStatus == 'All' ? 'active' : ''}" aria-expanded="false">
-					                All Offre <span class="badge badge-pill shadow-primary badge-primary">[[${totalOffersCount}]]</span>
+					            <a href="#navpills-1" class="nav-link text-dark" th:href="@{/liste-des-offres?status=All}" aria-expanded="false">
+					                Toutes les offres <span class="badge badge-pill shadow-primary badge-primary">[[${totalOffersCount}]]</span>
 					            </a>
 					        </li>
 					        <li class="nav-item">
-					            <a href="#navpills-2" class="nav-link text-dark" th:href="@{/liste-des-offres?status=In Progress}" 
-					               th:classappend="${selectedStatus == 'In Progress' ? 'active' : ''}" aria-expanded="false">
-					                On Progress <span class="badge badge-pill badge-info shadow-info">[[${inProgressCount}]]</span>
+					            <a href="#navpills-2" class="nav-link text-dark" th:href="@{/liste-des-offres?status=Progress}"aria-expanded="false">
+					                En cours <span class="badge badge-pill badge-info shadow-info">[[${inProgressCount}]]</span>
 					            </a>
 					        </li>
 					        <li class="nav-item">
-					            <a href="#navpills-3" class="nav-link text-dark" th:href="@{/liste-des-offres?status=Pending}" 
-					               th:classappend="${selectedStatus == 'Pending' ? 'active' : ''}" aria-expanded="true">
-					                Pending <span class="badge badge-pill badge-warning shadow-warning">[[${pendingCount}]]</span>
+					            <a href="#navpills-3" class="nav-link text-dark" th:href="@{/liste-des-offres?status=Pending}"aria-expanded="true">
+					                En attente <span class="badge badge-pill badge-warning shadow-warning">[[${pendingCount}]]</span>
 					            </a>
 					        </li>
 					        <li class="nav-item">
-					            <a href="#navpills-4" class="nav-link text-dark" th:href="@{/liste-des-offres?status=Closed}" 
-					               th:classappend="${selectedStatus == 'Closed' ? 'active' : ''}" aria-expanded="true">
-					                Closed <span class="badge badge-pill badge-danger shadow-danger">[[${closedCount}]]</span>
+					            <a href="#navpills-4" class="nav-link text-dark" th:href="@{/liste-des-offres?status=Closed}"aria-expanded="true">
+					                Fermé <span class="badge badge-pill badge-danger shadow-danger">[[${closedCount}]]</span>
 					            </a>
 					        </li>
 					    </ul>
 					</div>
 					
 					<!-- Tab content -->
-					<div class="tab-content project-list-group" id="myTabContent">
+					<div class="tab-content project-list-group mx-auto" id="myTabContent">
 					    <!-- All Offre -->
 					    <div class="tab-pane fade active show" id="navpills-1">
 					        <div class="card" th:each="operation : ${userDaretOperations}">
-					            <div th:if="${operation.status == 'All' or operation.status == null}" th:replace="Admin/daretDetailsFragment :: daretDetails(${operation})"></div>
+					            <div th:if="${operation.status == 'All' or operation.status == null}" th:replace="~{Admin/daretDetailsFragment :: daretDetails(${operation})}"></div>
 					        </div>
 					    </div>
 					
 					    <!-- On Progress -->
 					    <div class="tab-pane fade" id="navpills-2">
 					        <div class="card" th:each="operation : ${userDaretOperations}">
-					            <div th:if="${operation.status == 'In Progress'}" th:replace="Admin/daretDetailsFragment :: daretDetails(${operation})"></div>
+					            <div th:if="${operation.status == 'Progress'}" th:replace="~{Admin/daretDetailsFragment :: daretDetails(${operation})}"></div>
 					        </div>
 					    </div>
 					
 					    <!-- Pending -->
 					    <div class="tab-pane fade" id="navpills-3">
 					        <div class="card" th:each="operation : ${userDaretOperations}">
-					            <div th:if="${operation.status == 'Pending'}" th:replace="Admin/daretDetailsFragment :: daretDetails(${operation})"></div>
+					            <div th:if="${operation.status == 'Pending'}" th:replace="~{Admin/daretDetailsFragment :: daretDetails(${operation})}"></div>
 					        </div>
 					    </div>
 					
 					    <!-- Closed -->
 					    <div class="tab-pane fade" id="navpills-4">
 					        <div class="card" th:each="operation : ${userDaretOperations}">
-					            <div th:if="${operation.status == 'Closed'}" th:replace="Admin/daretDetailsFragment :: daretDetails(${operation})"></div>
+					            <div th:if="${operation.status == 'Closed'}" th:replace="~{Admin/daretDetailsFragment :: daretDetails(${operation})}"></div>
 					        </div>
 					    </div>
 					</div>
@@ -159,7 +155,7 @@
 	<!-- Add this script to your HTML file, or include it in your existing script file -->
 <script th:inline="javascript">
    function confirmEditOrDelete(operationId, operationStatus) {
-        if (operationStatus === 'In Progress') {
+        if (operationStatus === 'Progress') {
             // Display a SweetAlert for cancellation
             Swal.fire({
                 icon: 'warning',
@@ -190,7 +186,6 @@
         }
     }
 </script>
-
 
 </body>
 </html>

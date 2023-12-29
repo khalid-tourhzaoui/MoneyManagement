@@ -1,6 +1,7 @@
 package com.mediatech.MoneyManagement.Models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -11,30 +12,41 @@ public class DaretOperation {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotBlank(message = "Le nom d'opération est obligatoire")
+    @Size(max = 50, message = "Le nom d'opération ne peut pas dépasser 50 caractères")
     @Column(nullable = false, length = 50)
     private String designation;
 
+    @Min(value = 1, message = "Le nombre de participants doit être d'au moins 1")
     @Column(nullable = false)
     private int nombreParticipant;
 
+    @NotNull(message = "La date de début est obligatoire")
+    @FutureOrPresent(message = "La date de début doit être dans le futur ou aujourd'hui")
     @Column(nullable = false)
     private LocalDate dateDebut;
 
+    @NotNull(message = "La date de fin est obligatoire")
+    @Future(message = "La date de fin doit être dans le futur")
     @Column(nullable = false)
     private LocalDate dateFin;
-    @Column(nullable = false,length = 30)
+
+    @NotBlank(message = "Le type de période est obligatoire")
+    @Column(nullable = false, length = 30)
     private String typePeriode; // Mensuelle, hebdomadaire, etc.
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "id")
     private User adminOffre;
 
+    @NotBlank(message = "Le statut est obligatoire")
     @Column(nullable = false, length = 50)
     private String status;
 
+    @Positive(message = "Le montant par période doit être un nombre positif")
     @Column(nullable = false)
     private double montantParPeriode;
-    
+
     @Column(nullable = false)
     private Long tourDeRole;
     
