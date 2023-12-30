@@ -1,8 +1,5 @@
 package com.mediatech.MoneyManagement.Controllers;
 
-
-import java.security.Principal;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,10 +31,7 @@ public class UserController {
 	public String getRegistrationPage(@ModelAttribute("user") UserDto userDto) {
 		return "Auth/register";
 	}
-	@GetMapping("/")
-	public String getRegi() {
-		return "base";
-	}
+	
 	
 	@PostMapping("/registration")
 	public String saveUser(@ModelAttribute("user") UserDto userDto, Model model) {
@@ -72,13 +66,25 @@ public class UserController {
 	
 	
 	@GetMapping("/user-dashboard")
-	public String userPage(Model model, Principal principal, HttpServletRequest request) {
-	    UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
+	public String userPage(Model model, @AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
+	    User currentUser = userService.findByEmail(userDetails.getUsername());
 	    String currentUrl = request.getRequestURL().toString();
-	    model.addAttribute("currentUrl", currentUrl);
-	    model.addAttribute("user", userDetails);
+
+	    // Add your logic to count Darets participated by the current user for different statuses
+	    long inProgressCount = daretOperationRepository.countDistinctByStatusAndParticipants("Progress", currentUser);
+	    long pendingCount = daretOperationRepository.countDistinctByStatusAndParticipants("Pending", currentUser);
+	    long closedCount = daretOperationRepository.countDistinctByStatusAndParticipants("Closed", currentUser);
+
+	    model.addAttribute("currentUrl", currentUrl)
+	            .addAttribute("user", currentUser)
+	            .addAttribute("pageTitle", "DARET-USER DASHBOARD")
+	            .addAttribute("inProgressCount", inProgressCount)
+	            .addAttribute("pendingCount", pendingCount)
+	            .addAttribute("closedCount", closedCount);
+
 	    return "User/UserDashboard";
 	}
+
 	
 	@GetMapping("/admin-dashboard")
 	public String adminPage (Model model,@AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
@@ -88,14 +94,20 @@ public class UserController {
 	    long pendingCount = daretOperationRepository.countByStatusAndAdminOffre("Pending", currentUser);
 	    long closedCount = daretOperationRepository.countByStatusAndAdminOffre("Closed", currentUser);
 	    long totalOffersCount = daretOperationRepository.countByAdminOffre(currentUser);
-
+	    //---------------------------------------------------------------------------------------------------------
+	    long inProgressCountSelf = daretOperationRepository.countDistinctByStatusAndParticipants("Progress", currentUser);
+	    long pendingCountSelf = daretOperationRepository.countDistinctByStatusAndParticipants("Pending", currentUser);
+	    long closedCountSelf = daretOperationRepository.countDistinctByStatusAndParticipants("Closed", currentUser);
 		model.addAttribute("currentUrl", currentUrl)
 	        .addAttribute("user", currentUser)
 	        .addAttribute("pageTitle", "DARET-ADMIN DASHBOARD ")
 			.addAttribute("inProgressCount", inProgressCount)
 		    .addAttribute("pendingCount", pendingCount)
 		    .addAttribute("closedCount", closedCount)
-		    .addAttribute("totalOffersCount", totalOffersCount);
+		    .addAttribute("totalOffersCount", totalOffersCount)
+		    .addAttribute("inProgressCountSelf", inProgressCountSelf)
+            .addAttribute("pendingCountSelf", pendingCountSelf)
+            .addAttribute("closedCountSelf", closedCountSelf);
 		return "Admin/AdminDashboard";
 	}
 	

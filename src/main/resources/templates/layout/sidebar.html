@@ -15,13 +15,19 @@
 				</div>
 				<ul class="metismenu" id="menu">
 					<li class="nav-label first">Menu principal</li>
-                    <li ><a  th:href="@{/admin-dashboard}" aria-expanded="false">
+                    <li th:if="${user.getRole() == 'ADMIN'}"><a  th:href="@{/admin-dashboard}" aria-expanded="false">
+							<i class="flaticon-144-layout"></i>
+							<span class="nav-text">Tableau de bord</span>
+						</a>
+                    </li>
+                    
+                    <li th:if="${user.getRole() == 'USER'}"><a  th:href="@{/user-dashboard}" aria-expanded="false">
 							<i class="flaticon-144-layout"></i>
 							<span class="nav-text">Tableau de bord</span>
 						</a>
                     </li>
                     <!--***************************************************************************************************-->
-                    <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+                    <li th:if="${user.getRole() == 'ADMIN'}"><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
 							<i class="flaticon-381-network"></i>
 							<span class="nav-text">Gestion des offres</span>
 						</a>
@@ -31,11 +37,28 @@
 						</ul>
 
                     </li>
+                    
+                     <li th:if="${user.getRole() == 'USER'}"><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+							<i class="flaticon-381-network"></i>
+							<span class="nav-text">Gestion des offres</span>
+						</a>
+                         <ul aria-expanded="false">
+							<li><a th:href="@{/liste-offres-pending}"><i class="fa-solid fa-list"></i> Liste des offres</a></li>
+						</ul>
+
+                    </li>   
+                     <!--***************************************************************************************************-->
+                     <li th:if="${user.getRole() == 'ADMIN'}"><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+							<i class="flaticon-381-network"></i>
+							<span class="nav-text">Gestion des participations</span>
+						</a>
+                         <ul aria-expanded="false">
+							<li><a th:href="@{/liste-offres-pending}"><i class="fa-solid fa-list"></i> Liste des participations</a></li>
+						</ul>
+
+                    </li>
                 </ul>
-				<!--<div class="copyright">
-					<p><strong>Zenix Crypto Admin Dashboard</strong> © 2021 All Rights Reserved</p>
-					<p class="fs-12">Made with <span class="heart"></span> by DexignZone</p>
-				</div>-->
+				
 			</div>
         </div>
         <!--**********************************

@@ -9,7 +9,7 @@ import java.util.List;
 @Entity
 public class DaretOperation {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank(message = "Le nom d'opération est obligatoire")
@@ -49,6 +49,9 @@ public class DaretOperation {
 
     @Column(nullable = false)
     private Long tourDeRole;
+    
+    @Column(nullable = true)
+    private float placesReservees=0;
     
     @ManyToMany
     @JoinTable(
@@ -163,6 +166,14 @@ public class DaretOperation {
 
 	public void setParticipants(List<User> participants) {
 		this.participants = participants;
+	}
+
+	public float getPlacesReservees() {
+		return placesReservees;
+	}
+
+	public void setPlacesReservees(float placesReservees) {
+		this.placesReservees = placesReservees;
 	}
 	
     

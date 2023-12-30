@@ -137,7 +137,7 @@ public class DaretOperationController {
 	             .addAttribute("pageTitle", "DARET-ADMIN UPDATE OFFER");
 
 	        // Return the view name for the update offer form
-	        return "Admin/test";
+	        return "Admin/liste-daret";
 	    }
 
 	    //-------------------------------------------------------------------------------------------------------------------------------------------
@@ -171,6 +171,43 @@ public class DaretOperationController {
 
 	        // Redirect to the list view after deletion
 	        return "redirect:/liste-des-offres?deleteSuccess";
+	    }
+
+		//--------------------------------------------------------------------------------------------------------------------------------------------
+	    @GetMapping("/liste-offres-pending")
+	    public String listPendingOffers(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+	        // Get the currently authenticated user details
+	        User currentUser = userService.findByEmail(userDetails.getUsername());
+
+	        // Get a list of offers with status "Pending" for all admins
+	        List<DaretOperation> pendingOffers = daretOperationService.findPendingOffers();
+
+	        // Add the authenticated user details and the list of pending offers to the model
+	        model.addAttribute("user", currentUser)
+	        	.addAttribute("pendingOffers", pendingOffers)
+	        	.addAttribute("pageTitle", "DARET-ADMIN UPDATE OFFER");
+	        System.out.println(pendingOffers);
+	        // Return the view name for displaying the list of pending offers
+	        return "Admin/liste-offres-pending";
+	    }
+		//--------------------------------------------------------------------------------------------------------------------------------------------
+	    @PostMapping("/liste-offres-pending/add-participant")
+	    public String addParticipantToDaretOperation(
+	    	@RequestParam("daretOperationId") Long daretOperationId,
+	        @RequestParam("userId") Long userId,
+	        @RequestParam("paymentType") String paymentType,
+	        Model model
+	    ) {
+	        // Validate payment type (you might want to add more validation)
+	        if (!paymentType.equals("Moitier") && !paymentType.equals("Normale") && !paymentType.equals("Double")) {
+	            // Handle invalid payment type, e.g., redirect to an error page
+	            return "redirect:/error";
+	        }
+
+	        // Call the service method to add participant and update placesReservees
+	        daretOperationService.addParticipantToDaretOperation(daretOperationId, userId, paymentType);
+
+	        return "redirect:/liste-offres-pending";
 	    }
 
 
