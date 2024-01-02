@@ -35,7 +35,8 @@
 							
                             <li class="nav-item dropdown header-profile">
                                 <a class="nav-link" href="#" role="button" data-toggle="dropdown">
-                                    <img src="images/corruption.gif" width="20" alt="">
+                                    <img th:src="@{/images/corruption.gif}" alt="Corruption Image">
+
 									<div class="header-info">
 										<span th:text="${user.nom} + ' ' + ${user.prenom}"></span>
 										<small>[[${user.getRole()}]]</small>

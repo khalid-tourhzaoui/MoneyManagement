@@ -83,9 +83,12 @@ public class DaretOperationServiceImpl implements DaretOperationService {
     
     @Override
     public void addParticipantToDaretOperation(Long daretOperationId, Long userId, String paymentType) {
-    	// Retrieve DaretOperation and User entities based on their IDs
-        DaretOperation daretOperation = daretOperationRepository.findById(daretOperationId).orElseThrow();
-        User user = userRepository.findById(userId).orElseThrow();
+        // Retrieve DaretOperation and User entities based on their IDs
+        DaretOperation daretOperation = daretOperationRepository.findById(daretOperationId)
+                .orElseThrow(null);
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(null);
 
         // Determine the factor based on paymentType
         double factor;
@@ -107,14 +110,22 @@ public class DaretOperationServiceImpl implements DaretOperationService {
 
         // Add the user to the participants list
         daretOperation.getParticipants().add(user);
-        System.out.println(daretOperation.getParticipants().size());
+
+        // Log relevant information
+        /*logger.info("Participant added: User={}, DaretOperation={}, PaymentType={}, PlacesReservees={}",
+                user.getId(), daretOperation.getId(), paymentType, daretOperation.getPlacesReservees());*/
+
         // Check if the number of participants is equal to nombreParticipant
-        if (daretOperation.getPlacesReservees() == daretOperation.getNombreParticipant()) {
+        if (daretOperation.getPlacesReservees() >= daretOperation.getNombreParticipant()) {
             // Update status to "Closed" or any status you want
             daretOperation.setStatus("Progress");
+
+            // Log status update
+            /*logger.info("DaretOperation {} status updated to Progress", daretOperation.getId());*/
         }
 
         // Save the updated DaretOperation
         daretOperationRepository.save(daretOperation);
     }
+
 }

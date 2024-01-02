@@ -117,28 +117,29 @@ public class DaretOperationController {
 	    @GetMapping("/edit-offer/{operationId}")
 	    public String showUpdateForm(@PathVariable Long operationId, Model model,
 	                                 @AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
-	        // Rest of the code remains the same
-	    	 User currentUser = userService.findByEmail(userDetails.getUsername());
-			    String currentUrl = request.getRequestURL().toString();
-			    model.addAttribute("currentUrl", currentUrl);
-			    // Add the authenticated user details to the model
-			    model.addAttribute("user", currentUser);
-	        // Retrieve the DaretOperation by ID
-	        DaretOperation daretOperation = daretOperationService.findById(operationId);
+	        try {
+	            User currentUser = userService.findByEmail(userDetails.getUsername());
+	            String currentUrl = request.getRequestURL().toString();
+	            model.addAttribute("currentUrl", currentUrl);
+	            model.addAttribute("user", currentUser);
 
-	        // Check if the DaretOperation is editable
-	        /*if ("Progress".equals(daretOperation.getStatus())) {
-	            // If the DaretOperation is in progress, redirect with a message
-	            return "redirect:/liste-des-offres?updateNotAllowed";
-	        }*/
+	            // Retrieve the DaretOperation by ID
+	            DaretOperation daretOperation = daretOperationService.findById(operationId);
 
-	        // If the DaretOperation is not in progress, show the update form
-	        model.addAttribute("daretOperation", daretOperation)
-	             .addAttribute("pageTitle", "DARET-ADMIN UPDATE OFFER");
+	            // Perform authorization check here if needed
 
-	        // Return the view name for the update offer form
-	        return "Admin/liste-daret";
+	            // If the DaretOperation is not in progress, show the update form
+	            model.addAttribute("daretOperation", daretOperation)
+	                 .addAttribute("pageTitle", "DARET-ADMIN UPDATE OFFER");
+
+	            // Return the view name for the update offer form
+	            return "Admin/update-offer";
+	        } catch (Exception xe) {
+	            // Consider redirecting to a more user-friendly error page or login page
+	            return "redirect:/login";
+	        }
 	    }
+
 
 	    //-------------------------------------------------------------------------------------------------------------------------------------------
 	    @PostMapping("/edit-offer/{operationId}")
@@ -155,6 +156,37 @@ public class DaretOperationController {
 
 
 	//--------------------------------------------------------------------------------------------------------------------------------------------
+	    @GetMapping("/show-offer/{operationId}")
+	    public String showOfferDetails(@PathVariable Long operationId,@AuthenticationPrincipal UserDetails userDetails,
+	    		Model model, HttpServletRequest request) {
+	    	try {
+	            User currentUser = userService.findByEmail(userDetails.getUsername());
+	            String currentUrl = request.getRequestURL().toString();
+	            model.addAttribute("currentUrl", currentUrl);
+	            model.addAttribute("user", currentUser);
+
+	            // Retrieve the DaretOperation by ID
+	            DaretOperation daretOperation = daretOperationService.findById(operationId);
+	            List<User> participants = daretOperation.getParticipants();
+
+	            // Perform authorization check here if needed
+
+	            // If the DaretOperation is not in progress, show the update form
+	            model.addAttribute("daretOperation", daretOperation)
+	            	 .addAttribute("participants", participants)
+	                 .addAttribute("pageTitle", "DARET-ADMIN UPDATE OFFER");
+
+	            // Return the view name for the update offer form
+	            return "Admin/show-offer";
+	         
+	        } catch (Exception xe) {
+	            // Consider redirecting to a more user-friendly error page or login page
+	            return "redirect:/login";
+	        }
+	    }
+
+	//--------------------------------------------------------------------------------------------------------------------------------------------
+
 	    @PostMapping("/delete-daret")
 	    public String deleteDaret(@RequestParam Long operationId) {
 	        // Retrieve the DaretOperation by ID
