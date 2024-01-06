@@ -2,13 +2,13 @@ package com.mediatech.MoneyManagement.Services;
 
 import java.util.List;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mediatech.MoneyManagement.Models.DaretOperation;
 import com.mediatech.MoneyManagement.Models.User;
 import com.mediatech.MoneyManagement.Repositories.DaretOperationRepository;
-import com.mediatech.MoneyManagement.Repositories.UserRepository;
 
 @Service
 public class DaretOperationServiceImpl implements DaretOperationService {
@@ -16,8 +16,7 @@ public class DaretOperationServiceImpl implements DaretOperationService {
     @Autowired
     private DaretOperationRepository daretOperationRepository;
     
-    @Autowired
-    private UserRepository userRepository;
+    
 
     @Override
     public DaretOperation save(DaretOperation daretOperation) {
@@ -75,22 +74,23 @@ public class DaretOperationServiceImpl implements DaretOperationService {
         // Implement the logic to fetch offers with status "Pending"
         return daretOperationRepository.findByStatus("Pending");
     }
-    
     @Override
+    public long countParticipationsByUserAndStatus(User participant, String status) {
+        return daretOperationRepository.countByDaretParticipantsUserAndStatus(participant, status);
+    }
+    /*@Override
     public long countDistinctUserParticipationsByStatus(User participant, String status) {
         return daretOperationRepository.countDistinctByStatusAndParticipants(status, participant);
-    }
+    }*/
     
-    @Override
+    /*@Override
     public void addParticipantToDaretOperation(Long daretOperationId, Long userId, String paymentType) {
-        // Retrieve DaretOperation and User entities based on their IDs
         DaretOperation daretOperation = daretOperationRepository.findById(daretOperationId)
                 .orElseThrow(null);
 
         User user = userRepository.findById(userId)
                 .orElseThrow(null);
 
-        // Determine the factor based on paymentType
         double factor;
         switch (paymentType) {
             case "Moitier":
@@ -104,28 +104,19 @@ public class DaretOperationServiceImpl implements DaretOperationService {
                 break;
         }
 
-        // Update placesReservees based on the factor
         float currentPlacesReservees = daretOperation.getPlacesReservees();
         daretOperation.setPlacesReservees((float) (currentPlacesReservees + factor));
 
-        // Add the user to the participants list
-        daretOperation.getParticipants().add(user);
+        daretOperation.getDaretParticipants().addAll(user);
 
-        // Log relevant information
-        /*logger.info("Participant added: User={}, DaretOperation={}, PaymentType={}, PlacesReservees={}",
-                user.getId(), daretOperation.getId(), paymentType, daretOperation.getPlacesReservees());*/
-
-        // Check if the number of participants is equal to nombreParticipant
+       
         if (daretOperation.getPlacesReservees() >= daretOperation.getNombreParticipant()) {
-            // Update status to "Closed" or any status you want
             daretOperation.setStatus("Progress");
 
-            // Log status update
-            /*logger.info("DaretOperation {} status updated to Progress", daretOperation.getId());*/
+           
         }
 
-        // Save the updated DaretOperation
         daretOperationRepository.save(daretOperation);
-    }
+    }*/
 
 }

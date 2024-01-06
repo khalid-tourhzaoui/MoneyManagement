@@ -27852,9 +27852,10 @@ table.dataTable.row-border tbody th, table.dataTable.row-border tbody td, table.
 
 .project-list-group .card {
   margin-bottom: 17px;
+  
   border: 1px solid;
   border-style: dashed;
-  border-width: 2px;
+  border-width: 3px;
   border-color: transparent; }
   .project-list-group .card:hover {
     border-color: #cccccc; }

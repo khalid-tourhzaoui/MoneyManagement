@@ -1,6 +1,7 @@
 package com.mediatech.MoneyManagement.Controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,8 +25,11 @@ public class UserController {
 	
 	@Autowired
 	private UserService userService;
+	
 	@Autowired
     private DaretOperationRepository daretOperationRepository;
+
+	
 
 	@GetMapping("/registration")
 	public String getRegistrationPage(@ModelAttribute("user") UserDto userDto) {
@@ -70,10 +74,9 @@ public class UserController {
 	    User currentUser = userService.findByEmail(userDetails.getUsername());
 	    String currentUrl = request.getRequestURL().toString();
 
-	    // Add your logic to count Darets participated by the current user for different statuses
-	    long inProgressCount = daretOperationRepository.countDistinctByStatusAndParticipants("Progress", currentUser);
-	    long pendingCount = daretOperationRepository.countDistinctByStatusAndParticipants("Pending", currentUser);
-	    long closedCount = daretOperationRepository.countDistinctByStatusAndParticipants("Closed", currentUser);
+	    long inProgressCount = daretOperationRepository.countByDaretParticipantsUserAndStatus(currentUser,"Progress");
+	    long pendingCount = daretOperationRepository.countByDaretParticipantsUserAndStatus(currentUser,"Pending");
+	    long closedCount = daretOperationRepository.countByDaretParticipantsUserAndStatus(currentUser,"Closed");
 
 	    model.addAttribute("currentUrl", currentUrl)
 	            .addAttribute("user", currentUser)
@@ -85,6 +88,8 @@ public class UserController {
 	    return "User/UserDashboard";
 	}
 
+
+
 	
 	@GetMapping("/admin-dashboard")
 	public String adminPage (Model model,@AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
@@ -95,9 +100,9 @@ public class UserController {
 	    long closedCount = daretOperationRepository.countByStatusAndAdminOffre("Closed", currentUser);
 	    long totalOffersCount = daretOperationRepository.countByAdminOffre(currentUser);
 	    //---------------------------------------------------------------------------------------------------------
-	    long inProgressCountSelf = daretOperationRepository.countDistinctByStatusAndParticipants("Progress", currentUser);
-	    long pendingCountSelf = daretOperationRepository.countDistinctByStatusAndParticipants("Pending", currentUser);
-	    long closedCountSelf = daretOperationRepository.countDistinctByStatusAndParticipants("Closed", currentUser);
+	    long inProgressCountSelf = daretOperationRepository.countByDaretParticipantsUserAndStatus(currentUser,"Progress");
+	    long pendingCountSelf = daretOperationRepository.countByDaretParticipantsUserAndStatus(currentUser,"Pending");
+	    long closedCountSelf = daretOperationRepository.countByDaretParticipantsUserAndStatus(currentUser,"Closed");
 		model.addAttribute("currentUrl", currentUrl)
 	        .addAttribute("user", currentUser)
 	        .addAttribute("pageTitle", "DARET-ADMIN DASHBOARD ")

@@ -101,33 +101,35 @@
 								<div class="d-flex flex-wrap align-items-center">
 									<div class="mr-auto mb-4">
 										<p class="mb-2 font-w500 text-black">Montant de participation :</p>
-										<form  th:id="'addParticipantForm' + ${offer.id}" method="post" th:action="@{/liste-offres-pending/add-participant}">
+										<form th:id="'addParticipantForm' + ${offer.id}" method="post" th:action="@{/liste-offres-pending/add-participant}">
 										    <input type="hidden" th:id="'daretOperationId' + ${offer.id}" name="daretOperationId" th:value="${offer.id}" />
-    										<input type="hidden" th:id="'userId' + ${offer.id}" name="userId" th:value="${user.id}" />
-    										<input type="hidden" th:id="'paymentType' + ${offer.id}" name="paymentType" />
+										    <input type="hidden" th:id="'userId' + ${offer.id}" name="userId" th:value="${user.id}" />
+										    <input type="hidden" th:id="'paymentType' + ${offer.id}" name="paymentType" />
+										    <input type="hidden" th:id="'montantPaye' + ${offer.id}" name="montantPaye" th:value="${offer.montantParPeriode}" />
 										
 										    <ul class="users-lg text-light">
-										        <li><a class="btn btn-sm btn-info" href="javascript:void(0);" th:onclick="'selectPaymentType(\'Moitier\', ' + ${offer.id} + ') '"
-										        >Moitier</a></li>
-										        <!--<li><a class="btn btn-sm btn-info" href="javascript:void(0);" onclick="selectPaymentType('Normale')">Normale</a></li>-->
-												<li>
+										        <li>
+										            <a class="btn btn-sm btn-info" href="javascript:void(0);" th:onclick="'selectPaymentType(\'Moitier\', ' + ${offer.id} + ', \'' + ${offer.montantParPeriode} + '\')'">Moitier</a>
+										        </li>
+										        <li>
 										            <a th:unless="${offer.placesReservees >= offer.nombreParticipant - 1}"
 										               class="btn btn-sm btn-info"
 										               href="javascript:void(0);"
-										               th:onclick="'selectPaymentType(\'Normale\', ' + ${offer.id} + ') '">Normale</a>
+										               th:onclick="'selectPaymentType(\'Normale\', ' + ${offer.id} + ', \'' + ${offer.montantParPeriode} + '\')'">Normale</a>
 										            <a th:unless="${offer.placesReservees < offer.nombreParticipant - 1}"
 										               class="btn btn-sm btn-info disabled">Normale</a>
 										        </li>
-																						<li>
+										        <li>
 										            <a th:unless="${offer.placesReservees >= offer.nombreParticipant - 1.5}"
 										               class="btn btn-sm btn-info"
 										               href="javascript:void(0);"
-										               th:onclick="'selectPaymentType(\'Double\', ' + ${offer.id} + ') '">Double</a>
+										               th:onclick="'selectPaymentType(\'Double\', ' + ${offer.id} + ', \'' + ${offer.montantParPeriode} + '\')'">Double</a>
 										            <a th:unless="${offer.placesReservees < offer.nombreParticipant - 1.5}"
 										               class="btn btn-sm btn-info disabled">Double</a>
 										        </li>
 										    </ul>
 										</form>
+
 									</div>
 									<div class="d-flex align-items-center mb-4">
 										<div class="text-center border-bx mr-3">
@@ -196,8 +198,8 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
     <script>
-        function selectPaymentType(paymentType, offerId) {
-			console.log('Function triggered!');
+        function selectPaymentType(paymentType, offerId, montantPaye) {
+    console.log('Function triggered!');
     // Use SweetAlert for confirmation
     Swal.fire({
         title: 'Confirmation',
@@ -209,14 +211,16 @@
         confirmButtonText: 'Yes'
     }).then((result) => {
         if (result.isConfirmed) {
-            // Update the hidden input field with the selected payment type
+            // Update the hidden input fields with the selected payment type and montant
             document.getElementById('paymentType' + offerId).value = paymentType;
+            document.getElementById('montantPaye' + offerId).value = montantPaye;
 
             // Submit the form
             document.getElementById('addParticipantForm' + offerId).submit();
         }
     });
 }
+
 
     var currentDate = new Date();
 

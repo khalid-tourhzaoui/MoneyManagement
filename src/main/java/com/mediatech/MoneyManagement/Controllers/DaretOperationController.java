@@ -1,5 +1,7 @@
 package com.mediatech.MoneyManagement.Controllers;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -18,9 +20,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.mediatech.MoneyManagement.Models.DaretOperation;
+import com.mediatech.MoneyManagement.Models.DaretParticipant;
 import com.mediatech.MoneyManagement.Models.User;
 import com.mediatech.MoneyManagement.Repositories.DaretOperationRepository;
+import com.mediatech.MoneyManagement.Repositories.DaretParticipantRepository;
 import com.mediatech.MoneyManagement.Services.DaretOperationService;
+import com.mediatech.MoneyManagement.Services.DaretParticipantService;
 import com.mediatech.MoneyManagement.Services.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,7 +36,8 @@ import jakarta.validation.Valid;
 public class DaretOperationController {
 	@Autowired
     private DaretOperationService daretOperationService;
-	
+	@Autowired
+    private DaretParticipantService daretParticipantService;
 	@Autowired
 	private UserService userService;
 	
@@ -40,6 +46,9 @@ public class DaretOperationController {
 	
 	@Autowired
     private DaretOperationRepository daretOperationRepository;
+	
+	@Autowired
+    private DaretParticipantRepository daretParticipantRepository;
 	
 
 	@GetMapping("/liste-des-offres")
@@ -107,14 +116,16 @@ public class DaretOperationController {
 	        User currentUser = userService.findByEmail(userDetails.getUsername());
 	        daretOperation.setAdminOffre(currentUser);
 	        daretOperation.setStatus("Pending");
+	        daretOperation.setDateDebut(null);
+	        daretOperation.setDateFin(null);
 	        daretOperation.setTourDeRole(1L);
 
 	        daretOperationService.save(daretOperation);
 
 	        return "redirect:/liste-des-offres";
 	    }
-	//-------------------------------------------------------------------------------------------------------------------------------------------
-	    @GetMapping("/edit-offer/{operationId}")
+	/*-------------------------------------------------------------------------------------------------------------------------------------------*/
+	    @GetMapping("/edit-offer/{operationId}")                                                                                                 
 	    public String showUpdateForm(@PathVariable Long operationId, Model model,
 	                                 @AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
 	        try {
@@ -133,7 +144,7 @@ public class DaretOperationController {
 	                 .addAttribute("pageTitle", "DARET-ADMIN UPDATE OFFER");
 
 	            // Return the view name for the update offer form
-	            return "Admin/update-offer";
+	            return "Admin/edit-offer";
 	        } catch (Exception xe) {
 	            // Consider redirecting to a more user-friendly error page or login page
 	            return "redirect:/login";
@@ -143,23 +154,38 @@ public class DaretOperationController {
 
 	    //-------------------------------------------------------------------------------------------------------------------------------------------
 	    @PostMapping("/edit-offer/{operationId}")
-	    public String updateOffer(@PathVariable Long operationId,@ModelAttribute("daretOperation") DaretOperation updatedDaretOperation,
+	    public String updateOffer(@PathVariable Long operationId, 
+	                              @ModelAttribute("daretOperation") DaretOperation updatedDaretOperation,
 	                              @AuthenticationPrincipal UserDetails userDetails) {
-	        // Rest of the code remains the same
+	        User currentUser = userService.findByEmail(userDetails.getUsername());
+	        // Assuming you have a method to retrieve the existing DaretOperation
+	        DaretOperation existingDaretOperation = daretOperationService.findById(operationId);
 
-	        // Save the updated offer
-	        daretOperationService.save(updatedDaretOperation);
+	        if (existingDaretOperation != null) {
+	            
+	            existingDaretOperation.setDesignation(updatedDaretOperation.getDesignation());
+	            existingDaretOperation.setNombreParticipant(updatedDaretOperation.getNombreParticipant());
+	            existingDaretOperation.setMontantParPeriode(updatedDaretOperation.getMontantParPeriode());
+	            existingDaretOperation.setTypePeriode(updatedDaretOperation.getTypePeriode());
+	            updatedDaretOperation.setAdminOffre(currentUser);
+		        updatedDaretOperation.setStatus("Pending");
+		        updatedDaretOperation.setTourDeRole(1L);
 
-	        // Redirect to the list of offers after updating
+	            
+	            // Save the updatedDaretOperation
+	            daretOperationService.save(existingDaretOperation);
+	        }
+
 	        return "redirect:/liste-des-offres?updateSuccess";
 	    }
 
 
+
 	//--------------------------------------------------------------------------------------------------------------------------------------------
 	    @GetMapping("/show-offer/{operationId}")
-	    public String showOfferDetails(@PathVariable Long operationId,@AuthenticationPrincipal UserDetails userDetails,
-	    		Model model, HttpServletRequest request) {
-	    	try {
+	    public String showOfferDetails(@PathVariable Long operationId, @AuthenticationPrincipal UserDetails userDetails,
+	            Model model, HttpServletRequest request) {
+	        try {
 	            User currentUser = userService.findByEmail(userDetails.getUsername());
 	            String currentUrl = request.getRequestURL().toString();
 	            model.addAttribute("currentUrl", currentUrl);
@@ -167,23 +193,25 @@ public class DaretOperationController {
 
 	            // Retrieve the DaretOperation by ID
 	            DaretOperation daretOperation = daretOperationService.findById(operationId);
-	            List<User> participants = daretOperation.getParticipants();
+	            List<DaretParticipant> participants = daretOperation.getDaretParticipants();
 
 	            // Perform authorization check here if needed
 
 	            // If the DaretOperation is not in progress, show the update form
 	            model.addAttribute("daretOperation", daretOperation)
-	            	 .addAttribute("participants", participants)
+	                 .addAttribute("participants", participants)
 	                 .addAttribute("pageTitle", "DARET-ADMIN UPDATE OFFER");
 
 	            // Return the view name for the update offer form
 	            return "Admin/show-offer";
-	         
+
 	        } catch (Exception xe) {
 	            // Consider redirecting to a more user-friendly error page or login page
 	            return "redirect:/login";
 	        }
 	    }
+
+
 
 	//--------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -208,39 +236,69 @@ public class DaretOperationController {
 		//--------------------------------------------------------------------------------------------------------------------------------------------
 	    @GetMapping("/liste-offres-pending")
 	    public String listPendingOffers(Model model, @AuthenticationPrincipal UserDetails userDetails) {
-	        // Get the currently authenticated user details
-	        User currentUser = userService.findByEmail(userDetails.getUsername());
-
-	        // Get a list of offers with status "Pending" for all admins
-	        List<DaretOperation> pendingOffers = daretOperationService.findPendingOffers();
-
-	        // Add the authenticated user details and the list of pending offers to the model
-	        model.addAttribute("user", currentUser)
-	        	.addAttribute("pendingOffers", pendingOffers)
-	        	.addAttribute("pageTitle", "DARET-ADMIN UPDATE OFFER");
-	        System.out.println(pendingOffers);
-	        // Return the view name for displaying the list of pending offers
-	        return "Admin/liste-offres-pending";
+	    	try {
+		        // Get the currently authenticated user details
+		        User currentUser = userService.findByEmail(userDetails.getUsername());
+	
+		        // Get a list of offers with status "Pending" for all admins
+		        List<DaretOperation> pendingOffers = daretOperationService.findPendingOffers();
+	
+		        // Add the authenticated user details and the list of pending offers to the model
+		        model.addAttribute("user", currentUser)
+		        	.addAttribute("pendingOffers", pendingOffers)
+		        	.addAttribute("pageTitle", "DARET-ADMIN UPDATE OFFER");
+		        System.out.println(pendingOffers);
+		        // Return the view name for displaying the list of pending offers
+		        return "Admin/liste-offres-pending";
+	    	}catch(Exception ex) {
+	    		return "redirect:/login";
+	    	}
 	    }
 		//--------------------------------------------------------------------------------------------------------------------------------------------
 	    @PostMapping("/liste-offres-pending/add-participant")
 	    public String addParticipantToDaretOperation(
-	    	@RequestParam("daretOperationId") Long daretOperationId,
-	        @RequestParam("userId") Long userId,
-	        @RequestParam("paymentType") String paymentType,
-	        Model model
+	            @RequestParam("daretOperationId") Long daretOperationId,
+	            @RequestParam("userId") Long userId,
+	            @RequestParam("paymentType") String paymentType,
+	            @RequestParam("montantPaye") float montantPaye,  // Add this parameter
+	            Model model
 	    ) {
 	        // Validate payment type (you might want to add more validation)
 	        if (!paymentType.equals("Moitier") && !paymentType.equals("Normale") && !paymentType.equals("Double")) {
 	            // Handle invalid payment type, e.g., redirect to an error page
 	            return "redirect:/error";
 	        }
-
 	        // Call the service method to add participant and update placesReservees
-	        daretOperationService.addParticipantToDaretOperation(daretOperationId, userId, paymentType);
+	        daretParticipantService.addParticipantToDaretOperation(daretOperationId, userId, paymentType, montantPaye);
 
 	        return "redirect:/liste-offres-pending";
 	    }
+//-----------------------------------------------------------------------------------------------------------------------------------------
+	    @PostMapping("/make-payment/{participantId}")
+	    public String makePayment(@PathVariable Long participantId) {
+	        try {
+	            DaretParticipant participant = daretParticipantService.getDaretParticipantById(participantId);
+
+	            // Check conditions before updating verifyPayement
+	            LocalDate currentDate = LocalDate.now();
+	            LocalDate paymentDate = participant.getDatePaiement();
+	            
+	            if (currentDate.isEqual(paymentDate) && participant.getVerifyPayement() == 0) {
+	                // Conditions met, update verifyPayement
+	                participant.setVerifyPayement(1);
+
+	                // Save the updated participant
+	                daretParticipantRepository.save(participant);
+	            }
+
+	            // Redirect to the appropriate page
+	            return "redirect:/show-offer/" + participant.getDaretOperation().getId();
+	        } catch (Exception e) {
+	            // Handle exceptions if needed
+	            return "redirect:/error";
+	        }
+	    }
+
 
 
     

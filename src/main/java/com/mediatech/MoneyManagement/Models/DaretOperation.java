@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -23,12 +24,12 @@ public class DaretOperation {
 
     @NotNull(message = "La date de début est obligatoire")
     @FutureOrPresent(message = "La date de début doit être dans le futur ou aujourd'hui")
-    @Column(nullable = false)
+    @Column(nullable = true)
     private LocalDate dateDebut;
 
     @NotNull(message = "La date de fin est obligatoire")
     @Future(message = "La date de fin doit être dans le futur")
-    @Column(nullable = false)
+    @Column(nullable = true)
     private LocalDate dateFin;
 
     @NotBlank(message = "Le type de période est obligatoire")
@@ -53,14 +54,13 @@ public class DaretOperation {
     @Column(nullable = true)
     private float placesReservees=0;
     
-    @ManyToMany
-    @JoinTable(
-        name = "daret_participants",
-        joinColumns = @JoinColumn(name = "daret_id"),
-        inverseJoinColumns = @JoinColumn(name = "utilisateur_id")
-    )
-    private List<User> participants;
+    @OneToMany(mappedBy = "daretOperation", cascade = CascadeType.ALL)
+    private List<DaretParticipant> daretParticipants;
+    @Column(name = "created_at")
+    private Date createdAt;
 
+    @Column(name = "updated_at")
+    private Date updatedAt;
 	public DaretOperation(String designation, int nombreParticipant, LocalDate dateDebut, LocalDate dateFin,String typePeriode, User adminOffre, String status,
 			double montantParPeriode,Long tourDeRole) {
 		
@@ -160,12 +160,12 @@ public class DaretOperation {
 		this.tourDeRole = tourDeRole;
 	}
 
-	public List<User> getParticipants() {
-		return participants;
+	public List<DaretParticipant> getDaretParticipants() {
+		return daretParticipants;
 	}
 
-	public void setParticipants(List<User> participants) {
-		this.participants = participants;
+	public void setDaretParticipants(List<DaretParticipant> daretParticipants) {
+		this.daretParticipants = daretParticipants;
 	}
 
 	public float getPlacesReservees() {
@@ -175,6 +175,31 @@ public class DaretOperation {
 	public void setPlacesReservees(float placesReservees) {
 		this.placesReservees = placesReservees;
 	}
-	
+	@PrePersist
+    protected void onCreate() {
+        createdAt = new Date();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = new Date();
+    }
+
+	public Date getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public Date getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(Date updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+    
     
 }
